@@ -4,12 +4,17 @@ import 'bootstrap/dist/css/bootstrap.min.css';
 import Carousel from 'react-bootstrap/Carousel';
 import BookFormModal from "./BookFormModal";
 import Button from 'react-bootstrap/Button';
+import UpdateBookModal from "./UpdateBookModal";
 class BestBooks extends React.Component {
   constructor(props) {
     super(props);
+    console.log(props);
     this.state = {
-     new : [],
-      books: []
+     showForm : false,
+     updateForm: false,
+      books: [],
+      book: {}
+      
     }
   }
   closeModal = () => {
@@ -23,7 +28,7 @@ class BestBooks extends React.Component {
     axios
     .get(`http://localhost:3001/books`)
     .then(result =>{
-      console.log(result.data);
+       console.log(result.data);
       this.setState({
         books : result.data
       })
@@ -61,7 +66,39 @@ class BestBooks extends React.Component {
     })
   }
 
-  /* TODO: Make a GET request to your API to fetch all the books from the database  */
+  closeUpdateModal = () => {
+    this.setState({ updateForm: false });
+  };
+
+  showUpdateModal = () => {
+    this.setState({ updateForm: true });
+  };
+  handleUpdateBook = async (updated) => {
+   const current = updated;
+    try {
+      const updatedBook = this.state.books.map((existingBook) => {
+        console.log(existingBook);
+        if (existingBook._id === current.id) {
+         return current;
+        } else {
+          return existingBook;
+        }
+      });
+
+      this.setState({
+        books: updatedBook,
+        book: current
+      });
+      await axios.put(
+        `http://localhost:3001/books/${current._id}`,
+        current
+      );
+    } catch (error) {
+      console.error("error in the handleCreateBook function: ", error);
+    }
+  }; 
+
+
 
   render() {
 
@@ -71,10 +108,20 @@ return (
 
 <Button id="bookbutton" style = {{marginLeft: '3.5rem'}} variant="primary" onClick={() => this.setState({ showForm: true })}>Add a New Book</Button>
       {this.state.showForm && <BookFormModal 
-      handleCreateBook={this.addbook} 
+      handleCreateBook={this.addbook} f
       closeModal={this.closeModal}
       showModal={this.showModal}
-      />}
+      />
+      }
+         {this.state.updateForm && (
+                      <UpdateBookModal
+                        book={this.state.book}
+                       
+                        handleUpdateBook={this.handleUpdateBook}
+                        closeUpdateModal={this.closeUpdateModal}
+                        showUpdateModal={this.showUpdateModal}
+                      />
+                    )}
 
         {this.state.books.length ? (
           <div id="secondaryDiv" style={{ width: "400px" }}>
@@ -97,6 +144,14 @@ return (
                         >
                           Delete This Book!
                         </Button>
+                        <Button
+                      id="updatebutton"
+                      style={{ marginLeft: "4rem" }}
+                      variant="primary"
+                      onClick={() => this.setState({ updateForm: true, book:item}) }
+                    >
+                      Edit a book entry
+                    </Button>
                   </Carousel.Caption>
                 </Carousel.Item>
                 )
