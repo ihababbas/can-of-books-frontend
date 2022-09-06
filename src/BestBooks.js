@@ -2,13 +2,23 @@ import React from 'react';
 import axios from 'axios';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import Carousel from 'react-bootstrap/Carousel';
+import BookFormModal from "./BookFormModal";
+import Button from 'react-bootstrap/Button';
 class BestBooks extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
+     new : {},
       books: []
     }
   }
+  closeModal = () => {
+    this.setState({showForm: false}); 
+  }
+
+  showModal = () => {
+    this.setState({showForm: true}); 
+  } 
   componentDidMount = () => {
     axios
     .get(`http://localhost:3001/books`)
@@ -23,13 +33,37 @@ class BestBooks extends React.Component {
     })
     
   }
+  addbook = (newBook) =>{
+    console.log(newBook)
+   
+    axios
+    .post(`http://localhost:3001/books`,  this.setState({
+      new :newBook
+    }) )
+    .then(result =>{
+      this.setState({
+        books : result.data
+      })
+    })
+    .catch(err=>{
+      console.log(err);
+    })
+  }
   /* TODO: Make a GET request to your API to fetch all the books from the database  */
 
   render() {
 
     /* TODO: render all the books in a Carousel */
 return (
-      <div  id="CarouselDiv">
+  <div>
+
+<Button id="bookbutton" style = {{marginLeft: '3.5rem'}} variant="primary" onClick={() => this.setState({ showForm: true })}>Add a New Book</Button>
+      {this.state.showForm && <BookFormModal 
+      handleCreateBook={this.addbook} 
+      closeModal={this.closeModal}
+      showModal={this.showModal}
+      />}
+
         {this.state.books.length ? (
           <div id="secondaryDiv" style={{ width: "400px" }}>
             <Carousel fade>
@@ -54,6 +88,7 @@ return (
         ) : (
           <h3>No Books Found :(</h3>
         )}
+      
       </div>
     );
   }
