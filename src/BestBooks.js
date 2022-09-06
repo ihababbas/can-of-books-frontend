@@ -8,7 +8,7 @@ class BestBooks extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
-     new : {},
+     new : [],
       books: []
     }
   }
@@ -35,11 +35,10 @@ class BestBooks extends React.Component {
   }
   addbook = (newBook) =>{
     console.log(newBook)
-   
+    console.log("done")
+   const book = newBook;
     axios
-    .post(`http://localhost:3001/books`,  this.setState({
-      new :newBook
-    }) )
+    .post(`http://localhost:3001/books`,book)
     .then(result =>{
       this.setState({
         books : result.data
@@ -49,6 +48,19 @@ class BestBooks extends React.Component {
       console.log(err);
     })
   }
+  deleteBook= (id) => {
+    axios
+    .delete(`http://localhost:3001/book/${id}`) //http://localhost:3010/deleteCat?id=${id}
+    .then(result =>{
+      this.setState({
+        books : result.data
+      })
+    })
+    .catch(err=>{
+      console.log(err);
+    })
+  }
+
   /* TODO: Make a GET request to your API to fetch all the books from the database  */
 
   render() {
@@ -79,6 +91,12 @@ return (
                     <h3>{item.title}</h3>
                     <p>{item.description}</p>
                     <p>{item.status}</p>
+                    <Button
+                          variant="light"
+                          onClick={() => this.deleteBook(item._id)}
+                        >
+                          Delete This Book!
+                        </Button>
                   </Carousel.Caption>
                 </Carousel.Item>
                 )
