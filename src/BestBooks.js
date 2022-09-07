@@ -5,6 +5,7 @@ import Carousel from 'react-bootstrap/Carousel';
 import BookFormModal from "./BookFormModal";
 import Button from 'react-bootstrap/Button';
 import UpdateBookModal from "./UpdateBookModal";
+import { withAuth0 } from '@auth0/auth0-react';
 class BestBooks extends React.Component {
   constructor(props) {
     super(props);
@@ -26,7 +27,7 @@ class BestBooks extends React.Component {
   } 
   componentDidMount = () => {
     axios
-    .get(`https://tusday.herokuapp.com/books`)
+    .get(`http://localhost:3001/books`)
     .then(result =>{
        console.log(result.data);
       this.setState({
@@ -43,7 +44,7 @@ class BestBooks extends React.Component {
     console.log("done")
    const book = newBook;
     axios
-    .post(`https://tusday.herokuapp.com/books`,book)
+    .post(`http://localhost:3001/books`,book)
     .then(result =>{
       this.setState({
         books : result.data
@@ -55,7 +56,7 @@ class BestBooks extends React.Component {
   }
   deleteBook= (id) => {
     axios
-    .delete(`https://tusday.herokuapp.com/book/${id}`) //http://localhost:3010/deleteCat?id=${id}
+    .delete(`http://localhost:3001/book/${id}`) //http://localhost:3010/deleteCat?id=${id}
     .then(result =>{
       this.setState({
         books : result.data
@@ -89,8 +90,9 @@ class BestBooks extends React.Component {
         books: updatedBook,
         book: current
       });
+
       await axios.put(
-        `https://tusday.herokuapp.com/${current._id}`,
+        `http://localhost:3001/books/${current._id}`,
         current
       );
     } catch (error) {
@@ -166,5 +168,4 @@ return (
     );
   }
 }
-
-export default BestBooks;
+export default withAuth0(BestBooks);

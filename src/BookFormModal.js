@@ -11,6 +11,7 @@ class BookFormModal extends React.Component {
       title: event.target.formTitle.value,
       description: event.target.formDescription.value,
       status: event.target.formStatus.value,
+      name: event.target.formname.value,
     };
     console.log("Here is our NEW Book: ", newBook);
     this.props.handleCreateBook(newBook);
@@ -44,6 +45,13 @@ class BookFormModal extends React.Component {
               <Form.Control
                 type="text"
                 placeholder="status of the book."
+              />
+            </Form.Group>
+            <Form.Group controlId="formname">
+              <Form.Label>User name</Form.Label>
+              <Form.Control
+                type="text"
+                placeholder="your name."
               />
             </Form.Group>
             <Modal.Footer>
