@@ -26,8 +26,10 @@ class BestBooks extends React.Component {
     this.setState({showForm: true}); 
   } 
   componentDidMount = () => {
+    const { user } = this.props.auth0;
     axios
-    .get(`http://localhost:3001/books`)
+    .get(`http://localhost:3001/books?name=${user.email}`)
+    
     .then(result =>{
        console.log(result.data);
       this.setState({
@@ -40,9 +42,11 @@ class BestBooks extends React.Component {
     
   }
   addbook = (newBook) =>{
+    const { user } = this.props.auth0;
     console.log(newBook)
     console.log("done")
-   const book = newBook;
+   let book = newBook;
+   book.name= user.email
     axios
     .post(`http://localhost:3001/books`,book)
     .then(result =>{
@@ -55,8 +59,9 @@ class BestBooks extends React.Component {
     })
   }
   deleteBook= (id) => {
+    const { user } = this.props.auth0;
     axios
-    .delete(`http://localhost:3001/book/${id}`) //http://localhost:3010/deleteCat?id=${id}
+    .delete(`http://localhost:3001/book/${id}?name=${user.email}`) //http://localhost:3010/deleteCat?id=${id}
     .then(result =>{
       this.setState({
         books : result.data
@@ -75,7 +80,9 @@ class BestBooks extends React.Component {
     this.setState({ updateForm: true });
   };
   handleUpdateBook = async (updated) => {
-   const current = updated;
+    const { user } = this.props.auth0;
+    let current = updated;
+    current.name= user.email
     try {
       const updatedBook = this.state.books.map((existingBook) => {
         console.log(existingBook);
