@@ -26,7 +26,7 @@ class BestBooks extends React.Component {
   } 
   componentDidMount = () => {
     axios
-    .get(`http://localhost:3001/books`)
+    .get(`https://tusday.herokuapp.com/books`)
     .then(result =>{
        console.log(result.data);
       this.setState({
@@ -43,7 +43,7 @@ class BestBooks extends React.Component {
     console.log("done")
    const book = newBook;
     axios
-    .post(`http://localhost:3001/books`,book)
+    .post(`https://tusday.herokuapp.com/books`,book)
     .then(result =>{
       this.setState({
         books : result.data
@@ -55,7 +55,7 @@ class BestBooks extends React.Component {
   }
   deleteBook= (id) => {
     axios
-    .delete(`http://localhost:3001/book/${id}`) //http://localhost:3010/deleteCat?id=${id}
+    .delete(`https://tusday.herokuapp.com/book/${id}`) //http://localhost:3010/deleteCat?id=${id}
     .then(result =>{
       this.setState({
         books : result.data
@@ -90,7 +90,7 @@ class BestBooks extends React.Component {
         book: current
       });
       await axios.put(
-        `http://localhost:3001/books/${current._id}`,
+        `https://tusday.herokuapp.com/${current._id}`,
         current
       );
     } catch (error) {
